@@ -23,16 +23,19 @@ export function generateId() {
 export function extractSkillsFromResume(resume: any) {
   const skills = new Set<string>();
 
-  // Extract from GitHub repos
+  // Extract from GitHub repos (All languages used)
   resume.selectedRepos?.forEach((repo: any) => {
-    if (repo.language && repo.language !== "Unknown") {
+    if (repo.languages && Array.isArray(repo.languages)) {
+      repo.languages.forEach((lang: string) => skills.add(lang));
+    } else if (repo.language && repo.language !== "Unknown") {
       skills.add(repo.language);
     }
   });
 
-  // Extract from experience descriptions (simple keyword matching could be better, but let's start simple)
+  // Extract from experience descriptions
   resume.experience?.forEach((exp: any) => {
-    const keywords = exp.description?.match(/\b(React|Node|Python|Go|AWS|Docker|Git|SQL|NoSQL|Tailwind|Sass|TypeScript|JavaScript|HTML|CSS)\b/gi);
+    // Extended list of common tech keywords
+    const keywords = exp.description?.match(/\b(React|Node|Python|Go|AWS|Docker|Git|SQL|NoSQL|Tailwind|Sass|TypeScript|JavaScript|HTML|CSS|Kubernetes|Terraform|Java|C\+\+|C#|PHP|Swift|Kotlin|Rust)\b/gi);
     keywords?.forEach((k: string) => skills.add(k));
   });
 

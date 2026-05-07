@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
+import { cn } from "@/lib/utils";
 import { 
   ReactFlow, 
   Background, 
@@ -14,33 +15,84 @@ import {
   MiniMap,
   BackgroundVariant,
   useReactFlow,
+  MarkerType, // Import MarkerType
   ReactFlowProvider
 } from "@xyflow/react";
 
 // Custom Node Component
 const RoadmapNode = ({ data }: any) => {
+  const handleClick = () => {
+    if (data.isRecommendation && data.label) {
+      const query = encodeURIComponent(data.label);
+      window.open(`https://www.google.com/search?q=${query}+course+tutorial`, '_blank');
+    }
+  };
+
+  const getStatusStyles = () => {
+    if (data.isCompleted) return "bg-emerald-500/10 border-emerald-500/50 text-emerald-700 dark:text-emerald-400";
+    if (data.isGap) return "bg-amber-500/10 border-amber-500/50 text-amber-700 dark:text-amber-400";
+    if (data.isRecommendation) return "bg-blue-500/5 border-blue-500/30 text-blue-700 dark:text-blue-400 italic text-xs";
+    if (data.isProject) return "bg-purple-500/10 border-purple-500/50 text-purple-700 dark:text-purple-400";
+    if (data.isSubNode) return "bg-slate-500/5 border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 text-xs";
+    return "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white font-bold";
+  };
+
   return (
     <motion.div 
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className={`px-5 py-3 rounded-xl border-2 shadow-xl min-w-[200px] max-w-[280px] text-center transition-all duration-300 relative z-10 ${
-      data.isGap 
-        ? "bg-amber-100 dark:bg-amber-900 border-amber-400 dark:border-amber-700 text-amber-950 dark:text-amber-50" 
-        : data.isRecommendation
-        ? "bg-blue-100 dark:bg-blue-900 border-blue-400 dark:border-blue-700 text-blue-950 dark:text-blue-50 italic text-[13px]"
-        : data.isProject
-        ? "bg-emerald-100 dark:bg-emerald-900 border-emerald-400 dark:border-emerald-700 text-emerald-950 dark:text-emerald-50"
-        : data.isSubNode
-        ? "bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs"
-        : "bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-950 dark:text-white font-bold"
-    }`}>
-      <Handle type="target" position={Position.Top} className="!w-3 !h-3 !bg-blue-600 !border-2 !border-white dark:!border-slate-900 !-top-1.5" />
-      <div className="flex flex-col items-center gap-1.5">
-        {data.icon && <data.icon size={16} className={data.isRecommendation ? "text-blue-600 dark:text-blue-400" : data.isProject ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400"} />}
-        <span className="font-sans tracking-tight break-words text-sm">{data.label}</span>
-        {data.description && <p className="text-[10px] opacity-70 mt-0.5 line-clamp-2">{data.description}</p>}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      onClick={handleClick}
+      className={cn(
+        "px-6 py-4 rounded-2xl border-2 shadow-sm min-w-[220px] max-w-[300px] transition-all duration-500 backdrop-blur-sm",
+        getStatusStyles(),
+        data.isRecommendation && "cursor-pointer hover:translate-x-1 hover:bg-blue-500/10",
+        !data.isRecommendation && "hover:shadow-xl hover:-translate-y-1"
+      )}
+    >
+      <Handle type="target" position={Position.Top} className="!w-2 !h-2 !bg-blue-500 !border-0 !-top-1" />
+      
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-3">
+          {data.isCompleted ? (
+            <div className="bg-emerald-500 text-white p-1 rounded-full shadow-lg shadow-emerald-500/20">
+              <CheckCircle2 size={14} />
+            </div>
+          ) : data.icon ? (
+            <div className={cn(
+              "p-2 rounded-xl",
+              data.isGap ? "bg-amber-500/20 text-amber-600" : 
+              data.isProject ? "bg-purple-500/20 text-purple-600" : 
+              "bg-blue-500/20 text-blue-600"
+            )}>
+              <data.icon size={16} />
+            </div>
+          ) : null}
+          
+          <div className="flex flex-col text-left">
+            <span className={cn(
+              "font-sans tracking-tight text-sm leading-tight",
+              data.isCompleted && "line-through opacity-60",
+              !data.isCompleted && "font-bold"
+            )}>
+              {data.label}
+            </span>
+            {data.description && (
+              <p className="text-[10px] opacity-60 mt-1 line-clamp-2 leading-relaxed font-medium italic">
+                {data.description}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {data.isRecommendation && (
+          <div className="mt-1 pt-2 border-t border-blue-500/10 text-[9px] font-black text-blue-500 uppercase tracking-[0.15em] flex items-center justify-between">
+            <span>Resources Available</span>
+            <ExternalLink size={10} />
+          </div>
+        )}
       </div>
-      <Handle type="source" position={Position.Bottom} className="!w-3 !h-3 !bg-blue-600 !border-2 !border-white dark:!border-slate-900 !-bottom-1.5" />
+
+      <Handle type="source" position={Position.Bottom} className="!w-2 !h-2 !bg-blue-500 !border-0 !-bottom-1" />
     </motion.div>
   );
 };
@@ -83,13 +135,21 @@ import {
   Rocket,
   Plus,
   Minus,
-  Maximize
+  Maximize,
+  Upload,
+  Briefcase,
+  ChevronRight,
+  ExternalLink,
+  Target,
+  MapPin
 } from "lucide-react";
 import Link from "next/link";
 import { useResume } from "@/hooks/useResume";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { extractSkillsFromResume } from "@/lib/utils";
-import { analyzeSkillGapAction } from "@/app/actions/ai";
+import { analyzeSkillGapAction, searchJobsAction, extractSkillsFromTextAction } from "@/app/actions/ai";
+import { JobsList } from "@/components/JobsList";
+import { Job } from "@/components/JobCard";
 
 // Load static roadmap data
 import frontendData from "@/data/roadmaps/frontend.json";
@@ -126,17 +186,24 @@ const createPlaceholderData = (title: string) => {
 };
 
 const ROLE_LIST = [
-  "Frontend", "Backend", "Full Stack", "DevOps", "DevSecOps", "Data Analyst", 
-  "AI Engineer", "AI and Data Scientist", "Data Engineer", "Android", 
-  "Machine Learning", "PostgreSQL", "iOS", "Blockchain", "QA", 
-  "Software Architect", "Cyber Security", "UX Design", "Technical Writer", 
-  "Game Developer", "Server Side Game Developer", "MLOps", "Product Manager", 
+  "Frontend Developer", "Backend Developer", "Fullstack Developer", "DevOps Engineer", 
+  "DevSecOps Engineer", "Data Analyst", "AI Engineer", "AI and Data Scientist", 
+  "Data Engineer", "Android Developer", "Machine Learning Engineer", "PostgreSQL Developer", 
+  "iOS Developer", "Blockchain Developer", "QA Engineer", "Software Architect", 
+  "Cyber Security Engineer", "UX Designer", "Technical Writer", "Game Developer", 
+  "Server Side Game Developer", "MLOps Engineer", "Product Manager", 
   "Engineering Manager", "Developer Relations", "BI Analyst"
 ];
 
+const COUNTRY_LIST = [
+  "Australia", "Canada", "Germany", "India", "Japan", "Netherlands", 
+  "Philippines", "Remote", "Singapore", "South Korea", "United Arab Emirates", 
+  "United Kingdom", "United States", "Worldwide"
+];
+
 const ROADMAPS = ROLE_LIST.map(role => {
-  if (role === "Frontend") return { id: "frontend", title: "Frontend Developer", data: frontendData };
-  if (role === "Backend") return { id: "backend", title: "Backend Developer", data: backendData };
+  if (role === "Frontend Developer") return { id: "frontend", title: "Frontend Developer", data: frontendData };
+  if (role === "Backend Developer") return { id: "backend", title: "Backend Developer", data: backendData };
   return { id: role.toLowerCase().replace(/\s+/g, "-"), title: role, data: createPlaceholderData(role) };
 });
 
@@ -149,161 +216,231 @@ export default function RoadmapPage() {
 }
 
 function RoadmapContent() {
-  const { resumes, isLoaded } = useResume();
+  const { resumes, isLoaded: resumeIsLoaded } = useResume();
   const [selectedRole, setSelectedRole] = useState(ROADMAPS[0]);
   const [selectedResumeId, setSelectedResumeId] = useState<string>("");
+  const [userLocation, setUserLocation] = useState<string>("Philippines");
+  
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [isSearchingJobs, setIsSearchingJobs] = useState(false);
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<any>(null);
+
+  const [nodes, setNodes] = useState<Node[]>([]);
+  const [edges, setEdges] = useState<Edge[]>([]);
 
   const currentResume = useMemo(() => 
     resumes.find(r => r.id === selectedResumeId),
     [resumes, selectedResumeId]
   );
 
-  const [nodes, setNodes] = useState<Node[]>([]);
-  const [edges, setEdges] = useState<Edge[]>([]);
+  const fetchJobs = async () => {
+    setIsSearchingJobs(true);
+    try {
+      const result = await searchJobsAction(selectedRole.title, userLocation);
+      setJobs(result.jobs);
+      setSelectedJob(null); // Reset job selection
+      setAnalysisResult(null); // Reset analysis
+      setNodes([]); // Clear roadmap
+      setEdges([]); // Clear roadmap
+    } catch (error) {
+      console.error("Failed to fetch jobs:", error);
+      setJobs([]);
+    } finally {
+      setIsSearchingJobs(false);
+    }
+  };
 
-  // Update nodes and edges when role changes or analysis finishes
-  useEffect(() => {
-    // Map base nodes to use our custom roadmapNode type
-    let baseNodes = selectedRole.data.nodes.map((n: any) => ({
-      ...n,
-      type: 'roadmapNode',
-      data: { ...n.data }
-    })) as Node[];
+  // Removed initial fetch useEffect to ensure manual trigger only
+
+  // Analyze gap when job is selected
+  const handleAnalyzeJob = async (job: Job) => {
+    if (!currentResume) {
+      alert("Please select a resume first to personalize the roadmap.");
+      return;
+    }
     
-    let baseEdges = [...selectedRole.data.edges] as Edge[];
-
-    if (analysisResult && analysisResult.gaps) {
-      // Find the last node to position the gaps after it
-      const lastNode = baseNodes.reduce((prev, current) => 
-        (prev.position.y > current.position.y) ? prev : current
-      );
-
-      let currentY = lastNode.position.y + 200;
+    setSelectedJob(job);
+    setIsAnalyzing(true);
+    setAnalysisResult(null);
+    
+    try {
+      const resumeSkills = extractSkillsFromResume(currentResume);
+      const result = await analyzeSkillGapAction(resumeSkills, job.skills);
+      setAnalysisResult(result);
       
-      // Add a header node for Gaps
-      const gapsHeaderId = "gaps-header";
+      // Auto-fit view after analysis results are applied
+      setTimeout(() => {
+        const flow = document.querySelector('.react-flow__viewport');
+        if (flow) {
+          // We can't easily call fitView here without the hook, 
+          // but we can set a flag or rely on the useEffect that updates nodes
+        }
+      }, 100);
+    } catch (error) {
+      console.error("Job analysis failed:", error);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const { fitView } = useReactFlow();
+
+  // ... (keep existing state)
+
+  // Update nodes and edges based on job and analysis
+  useEffect(() => {
+    if (!selectedJob || !analysisResult) {
+      setNodes([]);
+      setEdges([]);
+      return;
+    }
+
+    // Adaptive Roadmap Logic
+    let baseNodes: Node[] = [];
+    let baseEdges: Edge[] = [];
+
+    // 1. Create nodes for job requirements
+    const startX = 0; // Center everything at 0
+    const startY = 0;
+    const verticalSpacing = 180;
+
+    // Header node
+    baseNodes.push({
+      id: "job-header",
+      type: "roadmapNode",
+      data: { 
+        label: `${selectedJob.title}`, 
+        icon: Target,
+        description: `@ ${selectedJob.company}`
+      },
+      position: { x: startX, y: startY },
+    });
+
+    let currentY = startY + verticalSpacing;
+
+    if (analysisResult) {
+      // Completed skills - Horizontal layout at the top
+      analysisResult.completed.forEach((skill: string, index: number) => {
+        const id = `completed-${index}`;
+        const xPos = (index - (analysisResult.completed.length - 1) / 2) * 260;
+        baseNodes.push({
+          id,
+          type: "roadmapNode",
+          data: { label: skill, isCompleted: true },
+          position: { x: xPos, y: currentY },
+        });
+        
+        // Connect job-header to each completed skill
+        baseEdges.push({
+          id: `e-header-${id}`,
+          source: "job-header",
+          target: id,
+          animated: true,
+          style: { stroke: '#10b981', strokeWidth: 3 }, // Removed strokeDasharray: '0'
+          markerEnd: { type: MarkerType.ArrowClosed, color: '#10b981' },
+        });
+      });
+
+      currentY += verticalSpacing;
+
+      // Missing skills (Learning Path) - Vertical center path
+      const pathHeaderId = "learning-path-header";
       baseNodes.push({
-        id: gapsHeaderId,
+        id: pathHeaderId,
         type: "roadmapNode",
-        data: { label: "YOUR SKILL GAPS", icon: Sparkles, isGap: true },
-        position: { x: 250, y: currentY },
+        data: { label: "LEARNING OBJECTIVES", icon: Sparkles, isGap: true },
+        position: { x: startX, y: currentY },
       });
-
-      // Connect last node to gaps header
+      
+      // Connect job-header directly to learning path header
       baseEdges.push({
-        id: `e-last-${gapsHeaderId}`,
-        source: lastNode.id,
-        target: gapsHeaderId,
+        id: `e-job-to-path-header`,
+        source: "job-header",
+        target: pathHeaderId,
         animated: true,
-        style: { stroke: '#f59e0b', strokeWidth: 4 },
+        style: { stroke: '#3b82f6', strokeWidth: 4 }, // Removed strokeDasharray: '0'
+        markerEnd: { type: MarkerType.ArrowClosed, color: '#3b82f6' },
       });
 
-      currentY += 150;
-
-      // Add each gap as a node
-      analysisResult.gaps.forEach((gapObj: any, index: number) => {
-        const skillName = typeof gapObj === 'string' ? gapObj : gapObj.skill;
-        const subtopics = gapObj.subtopics || [];
-        
-        const gapId = `gap-${index}`;
-        // More compact layout: two columns near the center
-        const isLeft = index % 2 === 0;
-        const xPos = isLeft ? -150 : 650;
-        
+      let pathY = currentY + verticalSpacing;
+      analysisResult.missing.forEach((gap: any, index: number) => {
+        const gapId = `missing-${index}`;
         baseNodes.push({
           id: gapId,
           type: "roadmapNode",
-          data: { label: skillName, isGap: true },
-          position: { x: xPos, y: currentY },
+          data: { label: gap.skill, isGap: true },
+          position: { x: startX, y: pathY },
         });
-
+        
+        // Connect nodes in sequence
         baseEdges.push({
-          id: `e-header-${gapId}`,
-          source: gapsHeaderId,
+          id: `e-path-${gapId}`,
+          source: index === 0 ? pathHeaderId : `missing-${index - 1}`,
           target: gapId,
-          type: ConnectionLineType.SmoothStep,
           animated: true,
-          style: { stroke: '#f59e0b', strokeWidth: 3 }, // More solid orange
+          style: { stroke: '#3b82f6', strokeWidth: 4 }, // Removed strokeDasharray: '0'
+          markerEnd: { type: MarkerType.ArrowClosed, color: '#3b82f6' },
         });
 
-        // Add subtopics as branches
-        subtopics.forEach((topic: string, tIndex: number) => {
-          const topicId = `topic-${index}-${tIndex}`;
-          const tXOffset = isLeft ? -280 : 280;
-          const tYOffset = (tIndex - (subtopics.length - 1) / 2) * 80;
-          
-          baseNodes.push({
-            id: topicId,
-            type: "roadmapNode",
-            data: { label: topic, isSubNode: true },
-            position: { x: xPos + tXOffset, y: currentY + tYOffset },
-          });
-
-          baseEdges.push({
-            id: `e-gap-${topicId}`,
-            source: gapId,
-            target: topicId,
-            animated: true,
-            style: { stroke: '#64748b', strokeDasharray: '4,4', strokeWidth: 2 },
-          });
-        });
-
-        // Find recommendation for this gap
-        const rec = analysisResult.recommendations?.find((r: any) => r.skill.toLowerCase() === skillName.toLowerCase());
+        // Recommendations - Offset to the right
+        const rec = analysisResult.recommendations.find((r: any) => r.skill === gap.skill);
         if (rec) {
           const recId = `rec-${index}`;
           baseNodes.push({
             id: recId,
             type: "roadmapNode",
             data: { label: rec.action, icon: Lightbulb, isRecommendation: true },
-            position: { x: xPos, y: currentY + 180 },
+            position: { x: startX + 350, y: pathY },
           });
           baseEdges.push({
             id: `e-gap-${recId}`,
             source: gapId,
             target: recId,
-            style: { stroke: '#2563eb', strokeDasharray: '4,4', strokeWidth: 2 },
+            animated: true,
+            style: { stroke: '#64748b', strokeDasharray: '5,5', strokeWidth: 2 },
           });
         }
-
-        if (!isLeft) currentY += 450; // More compact vertical spacing
+        pathY += verticalSpacing;
       });
 
-      // Add Mastery Projects at the very end
-      if (analysisResult.projects && analysisResult.projects.length > 0) {
-        currentY += 150;
-        const projectsHeaderId = "projects-header";
+      // Projects
+      if (analysisResult.projects?.length > 0) {
+        const projHeaderId = "projects-header";
         baseNodes.push({
-          id: projectsHeaderId,
+          id: projHeaderId,
           type: "roadmapNode",
           data: { label: "MASTERY PROJECTS", icon: Rocket, isGap: true },
-          position: { x: 250, y: currentY },
+          position: { x: startX, y: pathY },
+        });
+        
+        baseEdges.push({
+          id: `e-last-path-proj`,
+          source: analysisResult.missing.length > 0 ? `missing-${analysisResult.missing.length - 1}` : pathHeaderId,
+          target: projHeaderId,
+          animated: true,
+          style: { stroke: '#10b981', strokeWidth: 4 }, // Removed strokeDasharray: '0'
+          markerEnd: { type: MarkerType.ArrowClosed, color: '#10b981' },
         });
 
         analysisResult.projects.forEach((proj: any, index: number) => {
           const projId = `proj-${index}`;
-          const xOffset = index % 2 === 0 ? -450 : 450;
+          const xOffset = (index - (analysisResult.projects.length - 1) / 2) * 350;
           baseNodes.push({
             id: projId,
             type: "roadmapNode",
-            data: { 
-              label: proj.title, 
-              description: proj.description,
-              isProject: true,
-              icon: Rocket 
-            },
-            position: { x: 250 + xOffset, y: currentY + 250 },
+            data: { label: proj.title, description: proj.description, isProject: true, icon: Rocket },
+            position: { x: startX + xOffset, y: pathY + verticalSpacing },
           });
-
           baseEdges.push({
-            id: `e-proj-header-${projId}`,
-            source: projectsHeaderId,
+            id: `e-proj-${projId}`,
+            source: projHeaderId,
             target: projId,
-            type: ConnectionLineType.SmoothStep,
-            animated: false,
-            style: { stroke: '#10b981', strokeWidth: 3 },
+            animated: true,
+            style: { stroke: '#10b981', strokeWidth: 3 }, // Removed strokeDasharray: '0'
+            markerEnd: { type: MarkerType.ArrowClosed, color: '#10b981' },
           });
         });
       }
@@ -311,33 +448,19 @@ function RoadmapContent() {
 
     setNodes(baseNodes);
     setEdges(baseEdges);
-  }, [selectedRole, analysisResult]);
+  }, [selectedJob, analysisResult, selectedRole]);
 
-  const handleAnalyze = async () => {
-    if (!currentResume) return;
-    
-    setIsAnalyzing(true);
-    setAnalysisResult(null);
-
-    try {
-      const resumeSkills = extractSkillsFromResume(currentResume);
-      const result = await analyzeSkillGapAction(resumeSkills, selectedRole.data.skills);
-      setAnalysisResult(result);
-    } catch (error: any) {
-      console.error("Analysis failed:", error);
-      // Fallback result to show error message in UI
-      setAnalysisResult({
-        gaps: [],
-        explanation: error.message || "Failed to connect to AI service.",
-        recommendations: [],
-        projects: []
-      });
-    } finally {
-      setIsAnalyzing(false);
+  // Auto-fit view when the nodes change
+  useEffect(() => {
+    if (nodes.length > 0) {
+      const timer = setTimeout(() => {
+        fitView({ padding: 0.2, duration: 800 });
+      }, 100);
+      return () => clearTimeout(timer);
     }
-  };
+  }, [nodes, fitView]);
 
-  if (!isLoaded) {
+  if (!resumeIsLoaded) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
         <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
@@ -346,7 +469,7 @@ function RoadmapContent() {
   }
 
   return (
-    <div className="h-screen flex flex-col bg-slate-50 dark:bg-slate-950 overflow-hidden">
+    <div className="h-screen flex flex-col bg-slate-50 dark:bg-slate-950 overflow-hidden font-sans">
       {/* Navigation Header */}
       <header className="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-50 px-6 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3 group">
@@ -357,24 +480,18 @@ function RoadmapContent() {
         </Link>
 
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Link
-              href="/"
-              className="flex items-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 px-4 py-2 rounded-xl transition-all"
-            >
-              <ChevronLeft size={18} /> Back to Editor
-            </Link>
-          </div>
-          <div className="w-px h-6 bg-slate-200 dark:bg-slate-800 mx-2" />
           <ThemeToggle />
         </div>
       </header>
 
       <div className="flex-1 flex overflow-hidden">
-        {/* Left Sidebar: Controls & Analysis */}
-        <aside className="w-80 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-y-auto p-6 flex flex-col gap-6 custom-scrollbar">
-          <div>
-            <h2 className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3">Target Role</h2>
+        {/* Left Sidebar: Role & Resume */}
+        <aside className="w-[400px] border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-y-auto p-6 flex flex-col gap-8 custom-scrollbar">
+          {/* Role Selection */}
+          <section>
+            <div className="flex items-center gap-2 text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4">
+              <Target size={14} /> Career Goal
+            </div>
             <select
               className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold outline-none appearance-none cursor-pointer hover:border-blue-300 dark:hover:border-blue-700 transition-colors font-sans"
               value={selectedRole.id}
@@ -389,12 +506,33 @@ function RoadmapContent() {
                 </option>
               ))}
             </select>
-          </div>
+          </section>
 
-          <div>
-            <h2 className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3">Reference Resume</h2>
+          {/* Location Selection */}
+          <section>
+            <div className="flex items-center gap-2 text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4">
+              <MapPin size={14} /> Preferred Location
+            </div>
             <select
               className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold outline-none appearance-none cursor-pointer hover:border-blue-300 dark:hover:border-blue-700 transition-colors font-sans"
+              value={userLocation}
+              onChange={(e) => setUserLocation(e.target.value)}
+            >
+              {COUNTRY_LIST.map(country => (
+                <option key={country} value={country} className="font-sans">
+                  {country}
+                </option>
+              ))}
+            </select>
+          </section>
+
+          {/* Resume Selection */}
+          <section>
+            <div className="flex items-center gap-2 text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4">
+              <FileText size={14} /> Reference Resume
+            </div>
+            <select
+              className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold outline-none appearance-none cursor-pointer hover:border-blue-300 dark:hover:border-blue-700 transition-colors font-sans mb-3"
               value={selectedResumeId}
               onChange={(e) => setSelectedResumeId(e.target.value)}
             >
@@ -405,41 +543,30 @@ function RoadmapContent() {
                 </option>
               ))}
             </select>
-          </div>
-
-          <button
-            onClick={handleAnalyze}
-            disabled={!selectedResumeId || isAnalyzing}
-            className="w-full flex items-center justify-center gap-2 bg-slate-900 dark:bg-blue-600 text-white py-4 rounded-2xl font-bold shadow-xl shadow-slate-200 dark:shadow-blue-900/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:scale-100"
-          >
-            {isAnalyzing ? (
-              <Loader2 className="animate-spin" size={20} />
-            ) : (
-              <Sparkles size={20} />
-            )}
-            Analyze Skill Gaps
-          </button>
-
-          {analysisResult && (
-            <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-4 p-5 rounded-2xl bg-blue-50/50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-900/30"
+            <button
+              onClick={fetchJobs}
+              disabled={isSearchingJobs}
+              className="w-full flex items-center justify-center gap-2 bg-slate-900 dark:bg-blue-600 text-white py-3 rounded-xl font-bold text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:scale-100 shadow-lg shadow-slate-200 dark:shadow-none"
             >
-              <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-black text-[10px] uppercase tracking-widest mb-2">
-                <Brain size={14} /> AI Insight
-              </div>
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed italic">
-                {analysisResult.explanation}
-              </p>
-              <button 
-                onClick={() => setAnalysisResult(null)}
-                className="mt-4 w-full py-2 text-[10px] font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors uppercase tracking-wider"
-              >
-                Clear Analysis
-              </button>
-            </motion.div>
-          )}
+              {isSearchingJobs ? (
+                <Loader2 className="animate-spin" size={16} />
+              ) : (
+                <Target size={16} />
+              )}
+              Filter Jobs
+            </button>
+          </section>
+
+          {/* Jobs List */}
+          <section className="flex-1">
+            <JobsList 
+              jobs={jobs} 
+              isLoading={isSearchingJobs} 
+              selectedJobId={selectedJob?.id}
+              onJobSelect={handleAnalyzeJob}
+              userSkills={currentResume ? extractSkillsFromResume(currentResume) : []}
+            />
+          </section>
         </aside>
 
         {/* Main Content: React Flow */}
@@ -449,32 +576,95 @@ function RoadmapContent() {
             edges={edges}
             nodeTypes={nodeTypes}
             connectionLineType={ConnectionLineType.SmoothStep}
+            defaultEdgeOptions={{
+              type: 'smoothstep',
+              animated: false,
+              style: { strokeWidth: 2 } // Removed strokeDasharray: '0'
+            }}
             fitView
             className="dark:bg-slate-950"
-            style={{ width: '100%', height: '100%' }}
           >
-            <Background color="#334155" gap={20} variant={BackgroundVariant.Dots} />
+            <Background color="#33415566" gap={20} variant={BackgroundVariant.Dots}/>
             <Panel position="bottom-right" className="mb-6 mr-6">
               <CustomControls />
             </Panel>
             <MiniMap 
               position="bottom-left"
               className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden !bottom-6 !left-6"
-              nodeColor={(node) => {
+              nodeColor={(node: any) => {
                 if (node.data.isGap) return '#fbbf24';
                 if (node.data.isRecommendation) return '#60a5fa';
                 if (node.data.isProject) return '#10b981';
+                if (node.data.isCompleted) return '#10b981';
                 return '#94a3b8';
               }}
               maskColor="rgba(15, 23, 42, 0.4)"
               style={{ width: 180, height: 120 }}
             />
-            <Panel position="top-right" className="p-4">
-              <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md p-6 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-2xl max-w-sm">
-                <h1 className="text-2xl font-black text-slate-900 dark:text-white mb-2">{selectedRole.title}</h1>
-                <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">{selectedRole.data.description}</p>
+            
+            {isAnalyzing && (
+              <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm">
+                <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-2xl border border-slate-100 dark:border-slate-800 flex flex-col items-center gap-4">
+                  <div className="relative">
+                    <div className="w-16 h-16 border-4 border-blue-100 dark:border-blue-900 rounded-full" />
+                    <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin absolute top-0" />
+                    <Sparkles className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-blue-600" size={24} />
+                  </div>
+                  <div className="text-center">
+                    <h3 className="text-lg font-black text-slate-900 dark:text-white">Analyzing Job Requirements</h3>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 font-medium mt-1">Comparing with your skills to build a path...</p>
+                  </div>
+                </div>
               </div>
-            </Panel>
+            )}
+
+            {!selectedJob && (
+              <Panel position="top-right" className="p-4">
+                <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-2xl max-w-sm">
+                  <div className="bg-blue-50 dark:bg-blue-900/30 w-12 h-12 rounded-2xl flex items-center justify-center mb-6">
+                    <Map className="text-blue-600 dark:text-blue-400" size={24} />
+                  </div>
+                  <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-3">{selectedRole.title}</h1>
+                  <p className="text-slate-500 dark:text-slate-400 text-sm font-medium leading-relaxed mb-6">{selectedRole.data.description}</p>
+                  <div className="flex items-center gap-3 p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl">
+                    <Briefcase className="text-slate-400" size={18} />
+                    <span className="text-xs font-bold text-slate-600 dark:text-slate-400">Select a job on the left to personalize this roadmap</span>
+                  </div>
+                </div>
+              </Panel>
+            )}
+
+            {selectedJob && analysisResult && (
+              <Panel position="top-right" className="p-4">
+                <motion.div 
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-2xl max-w-md"
+                >
+                  <div className="flex items-center gap-2 text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-[0.2em] mb-4">
+                    <Brain size={14} /> Career Coach Insights
+                  </div>
+                  <p className="text-sm text-slate-600 dark:text-slate-300 font-medium leading-relaxed italic mb-6">
+                    "{analysisResult.explanation}"
+                  </p>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex justify-between text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      <span>Compatibility</span>
+                      <span className="text-emerald-500">
+                        {Math.round((analysisResult.completed.length / (analysisResult.completed.length + analysisResult.missing.length)) * 100)}% Match
+                      </span>
+                    </div>
+                    <div className="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: `${(analysisResult.completed.length / (analysisResult.completed.length + analysisResult.missing.length)) * 100}%` }}
+                        className="h-full bg-emerald-500"
+                      />
+                    </div>
+                  </div>
+                </motion.div>
+              </Panel>
+            )}
           </ReactFlow>
         </main>
       </div>

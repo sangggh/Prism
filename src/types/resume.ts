@@ -40,6 +40,7 @@ export interface GitHubRepo {
   description: string;
   html_url: string;
   language: string;
+  languages?: string[]; // All languages used in the repo
   stargazers_count: number;
 }
 

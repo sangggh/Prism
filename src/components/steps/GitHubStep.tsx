@@ -28,13 +28,29 @@ export const GitHubStep: React.FC<Props> = ({
       const response = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=100`);
       if (!response.ok) throw new Error("User not found or API limit reached");
       const data = await response.json();
-      const mappedRepos: GitHubRepo[] = data.map((repo: any) => ({
-        id: repo.id,
-        name: repo.name,
-        description: repo.description || "No description provided",
-        html_url: repo.html_url,
-        language: repo.language || "Unknown",
-        stargazers_count: repo.stargazers_count,
+      
+      const mappedRepos: GitHubRepo[] = await Promise.all(data.map(async (repo: any) => {
+        // Fetch all languages for each repo
+        let languages: string[] = [];
+        try {
+          const langResponse = await fetch(repo.languages_url);
+          if (langResponse.ok) {
+            const langData = await langResponse.json();
+            languages = Object.keys(langData);
+          }
+        } catch (err) {
+          console.error(`Failed to fetch languages for ${repo.name}`, err);
+        }
+
+        return {
+          id: repo.id,
+          name: repo.name,
+          description: repo.description || "No description provided",
+          html_url: repo.html_url,
+          language: repo.language || "Unknown",
+          languages: languages.length > 0 ? languages : [repo.language].filter(Boolean),
+          stargazers_count: repo.stargazers_count,
+        };
       }));
       setRepos(mappedRepos);
     } catch (err: any) {
