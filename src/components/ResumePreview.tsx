@@ -44,7 +44,7 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
                 <div className="flex justify-between items-baseline mb-1">
                   <span className="font-bold text-[11pt]" style={{ color: '#000000' }}>{edu.school}</span>
                   <span className="text-[10pt]" style={{ color: '#000000' }}>
-                    {formatDate(edu.startDate)} – {edu.endDate ? formatDate(edu.endDate) : "Present"}
+                    {formatDate(edu.startDate)} — {edu.endDate ? formatDate(edu.endDate) : "Present"}
                   </span>
                 </div>
                 <div className="flex justify-between items-baseline">
@@ -69,7 +69,7 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
                 <div className="flex justify-between items-baseline mb-1">
                   <span className="font-bold text-[11pt]" style={{ color: '#000000' }}>{exp.company}</span>
                   <span className="text-[10pt]" style={{ color: '#000000' }}>
-                    {formatDate(exp.startDate)} – {exp.endDate ? formatDate(exp.endDate) : "Present"}
+                    {formatDate(exp.startDate)} — {exp.endDate ? formatDate(exp.endDate) : "Present"}
                   </span>
                 </div>
                 <div className="italic text-[10.5pt] mb-2" style={{ color: '#000000' }}>{exp.position}</div>

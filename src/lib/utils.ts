@@ -7,7 +7,9 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatDate(dateString: string) {
   if (!dateString) return "";
+  if (dateString.toLowerCase() === "present") return "Present";
   const date = new Date(dateString);
+  if (isNaN(date.getTime())) return "Present"; // Fallback for invalid dates
   return date.toLocaleDateString("en-US", {
     month: "short",
     year: "numeric",

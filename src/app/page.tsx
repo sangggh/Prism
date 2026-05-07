@@ -42,6 +42,7 @@ export default function Home() {
 
   const handleSave = () => {
     saveResume(currentResume);
+    setView("review");
   };
 
   const handleExportPDF = async () => {
@@ -53,11 +54,21 @@ export default function Home() {
       
       // High-quality canvas options
       const canvas = await html2canvas(element, {
-        scale: 3, // Increased scale for better resolution
+        scale: 2, // Slightly reduced for performance on web
         useCORS: true,
-        logging: false,
+        logging: true, // Enable logging to debug
         backgroundColor: "#ffffff",
-        windowWidth: 794, // Fixed width in pixels for A4 (210mm @ 96dpi)
+        windowWidth: 794,
+        onclone: (clonedDoc) => {
+          // Ensure the cloned element is visible and styled for capture
+          const el = clonedDoc.getElementById("resume-content");
+          if (el) {
+            el.style.display = "block";
+            el.style.visibility = "visible";
+            el.style.position = "static";
+            el.style.transform = "none";
+          }
+        }
       });
       
       const imgData = canvas.toDataURL("image/jpeg", 1.0);
@@ -163,7 +174,7 @@ export default function Home() {
                 onCreateNew={handleCreateNew}
               />
             </motion.div>
-          ) : (
+          ) : view === "editor" ? (
             <motion.div
               key="editor"
               initial={{ opacity: 0, scale: 0.98 }}
@@ -255,6 +266,37 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="review"
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              className="flex flex-col items-center gap-8 py-10"
+            >
+              <div className="flex items-center justify-between w-full max-w-[850px]">
+                <button
+                  onClick={() => setView("editor")}
+                  className="flex items-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-all"
+                >
+                  <ChevronLeft size={20} /> Back to Editor
+                </button>
+                <div className="flex gap-4">
+                  <button
+                    onClick={handleExportPDF}
+                    disabled={isExporting}
+                    className="flex items-center gap-2 px-8 py-4 rounded-2xl bg-blue-600 text-white font-bold shadow-xl shadow-blue-200 dark:shadow-blue-900/40 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                  >
+                    {isExporting ? <Loader2 size={20} className="animate-spin" /> : <Download size={20} />}
+                    Download PDF
+                  </button>
+                </div>
+              </div>
+
+              <div className="shadow-2xl shadow-slate-300 dark:shadow-black/60 rounded-sm overflow-hidden bg-white ring-1 ring-slate-200 dark:ring-slate-800">
+                <ResumePreview ref={resumeRef} data={currentResume} />
               </div>
             </motion.div>
           )}
