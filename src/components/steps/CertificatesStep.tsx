@@ -30,19 +30,18 @@ export const CertificatesStep: React.FC<Props> = ({ data, onChange }) => {
     );
   };
 
-  const inputClasses = "w-full p-3 bg-white border border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all text-slate-900 placeholder:text-slate-400 font-medium";
-  const labelClasses = "text-xs font-bold uppercase tracking-widest text-slate-500 mb-1.5 ml-1";
+  const inputClasses = "w-full p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:border-blue-500 outline-none transition-all text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 font-medium";
+  const labelClasses = "text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5 ml-1";
 
-  return (
-    <div className="space-y-8">
+  return (    <div className="space-y-8">
       <div className="flex justify-between items-end">
         <div>
-          <h2 className="text-2xl font-black text-slate-900 mb-2">Certificates & Achievements</h2>
-          <p className="text-slate-500">Showcase your specialized skills and recognitions.</p>
+          <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">Certificates & Achievements</h2>
+          <p className="text-slate-500 dark:text-slate-400">Showcase your specialized skills and recognitions.</p>
         </div>
         <button
           onClick={addCertificate}
-          className="flex items-center gap-2 bg-slate-900 text-white px-5 py-3 rounded-xl hover:bg-slate-800 transition-all font-bold shadow-lg shadow-slate-100"
+          className="flex items-center gap-2 bg-slate-900 dark:bg-blue-600 text-white px-5 py-3 rounded-xl hover:bg-slate-800 dark:hover:bg-blue-700 transition-all font-bold shadow-lg shadow-slate-100 dark:shadow-blue-900/20"
         >
           <Plus size={18} /> Add Certificate
         </button>
@@ -52,7 +51,7 @@ export const CertificatesStep: React.FC<Props> = ({ data, onChange }) => {
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-center py-16 border-2 border-dashed rounded-3xl text-slate-400 bg-slate-50/50"
+          className="text-center py-16 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-3xl text-slate-400 dark:text-slate-500 bg-slate-50/50 dark:bg-slate-800/30"
         >
           <Award size={40} className="mx-auto mb-4 opacity-20" />
           <p className="font-medium">No certificates added yet.</p>
@@ -67,11 +66,11 @@ export const CertificatesStep: React.FC<Props> = ({ data, onChange }) => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="p-8 border border-slate-100 rounded-3xl bg-white shadow-sm relative group hover:shadow-md transition-all"
+              className="p-8 border border-slate-100 dark:border-slate-700 rounded-3xl bg-white dark:bg-slate-800 shadow-sm relative group hover:shadow-md transition-all"
             >
               <button
                 onClick={() => removeCertificate(cert.id)}
-                className="absolute top-6 right-6 text-slate-300 hover:text-red-500 p-2 hover:bg-red-50 rounded-xl transition-all"
+                className="absolute top-6 right-6 text-slate-300 dark:text-slate-600 hover:text-red-500 dark:hover:text-red-400 p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all"
               >
                 <Trash2 size={20} />
               </button>
@@ -98,7 +97,7 @@ export const CertificatesStep: React.FC<Props> = ({ data, onChange }) => {
                   />
                 </div>
                 <div className="flex flex-col">
-                  <label className={labelClasses}>Date Received</label>
+                  <label className={labelClasses}>Date Issued</label>
                   <input
                     type="date"
                     value={cert.date}
@@ -107,29 +106,20 @@ export const CertificatesStep: React.FC<Props> = ({ data, onChange }) => {
                   />
                 </div>
                 <div className="flex flex-col">
-                  <label className={labelClasses}>Verification Link (Optional)</label>
+                  <label className={labelClasses}>Credential Link (Optional)</label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500">
                       <LinkIcon size={16} />
                     </div>
                     <input
-                      type="text"
-                      value={cert.link || ""}
-                      onChange={(e) => handleChange(cert.id, "link", e.target.value)}
-                      placeholder="https://verify.cert.com/..."
+                      type="url"
+                      value={cert.url || ""}
+                      onChange={(e) => handleChange(cert.id, "url", e.target.value)}
+                      placeholder="https://..."
                       className={`${inputClasses} pl-11`}
                     />
                   </div>
                 </div>
-              </div>
-              <div className="flex flex-col mt-6">
-                <label className={labelClasses}>Short Description (Optional)</label>
-                <textarea
-                  value={cert.description || ""}
-                  onChange={(e) => handleChange(cert.id, "description", e.target.value)}
-                  placeholder="Briefly describe the skills or achievement..."
-                  className={`${inputClasses} min-h-[100px] resize-none`}
-                />
               </div>
             </motion.div>
           ))}

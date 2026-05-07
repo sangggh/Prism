@@ -11,9 +11,9 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
     return (
       <div
         ref={ref}
-        className="bg-white p-[20mm] shadow-lg w-[210mm] min-h-[297mm] mx-auto text-[#1a1a1a] font-serif leading-tight print:shadow-none"
+        className="bg-white p-[20mm] shadow-lg w-[210mm] min-h-[297mm] mx-auto text-[#1a1a1a] leading-tight print:shadow-none"
         id="resume-content"
-        style={{ color: '#1a1a1a', backgroundColor: '#ffffff' }}
+        style={{ color: '#1a1a1a', backgroundColor: '#ffffff', fontFamily: '"Times New Roman", Times, serif' }}
       >
         {/* Header */}
         <div className="text-center mb-8">
@@ -125,7 +125,7 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
                   <span className="text-[10pt]" style={{ color: '#000000' }}>{formatDate(cert.date)}</span>
                 </div>
                 <div className="text-[9.5pt]" style={{ color: '#1f2937' }}>
-                  {cert.issuer} {cert.description && `• ${cert.description}`}
+                  {cert.issuer} {cert.url && <span className="text-blue-700 ml-1">• {cert.url.replace(/^https?:\/\//, '')}</span>}
                 </div>
               </div>
             ))}

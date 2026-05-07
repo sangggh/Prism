@@ -133,7 +133,7 @@ export const FormWizard: React.FC<Props> = ({ data, onChange, onSave, onPreview 
   return (
     <div className="flex flex-col gap-8">
       {/* Horizontal Stepper */}
-      <div className="flex items-center justify-between relative px-2">
+      <div className="flex items-center justify-between relative px-2 mb-4">
         <div className="absolute top-1/2 left-0 w-full h-0.5 bg-slate-100 dark:bg-slate-800 -translate-y-1/2 z-0" />
         {STEPS.map((step, index) => {
           const Icon = step.icon;
@@ -144,7 +144,6 @@ export const FormWizard: React.FC<Props> = ({ data, onChange, onSave, onPreview 
             <button
               key={step.id}
               onClick={() => {
-                // Only allow clicking steps if they are valid or if we are going backwards
                 if (index <= currentStep || isStepValid()) {
                   setCurrentStep(index);
                 }
@@ -175,7 +174,7 @@ export const FormWizard: React.FC<Props> = ({ data, onChange, onSave, onPreview 
       </div>
 
       {/* Content Area */}
-      <div className="mt-8 bg-slate-50/50 dark:bg-slate-800/30 rounded-2xl p-8 border border-slate-100 dark:border-slate-800 min-h-[500px]">
+      <div className="mt-8 min-h-[500px]">
         <AnimatePresence mode="wait">
           {renderStep()}
         </AnimatePresence>

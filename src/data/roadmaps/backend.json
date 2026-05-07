@@ -1,0 +1,30 @@
+{
+  "id": "backend",
+  "title": "Backend Developer",
+  "description": "Step by step guide to becoming a backend developer in 2026",
+  "nodes": [
+    { "id": "1", "type": "input", "data": { "label": "Internet Basics" }, "position": { "x": 250, "y": 0 } },
+    { "id": "2", "data": { "label": "OS & General Knowledge" }, "position": { "x": 250, "y": 100 } },
+    { "id": "3", "data": { "label": "Pick a Language (Python/Node/Go)" }, "position": { "x": 250, "y": 200 } },
+    { "id": "4", "data": { "label": "Relational Databases (PostgreSQL)" }, "position": { "x": 250, "y": 300 } },
+    { "id": "5", "data": { "label": "NoSQL Databases (MongoDB/Redis)" }, "position": { "x": 250, "y": 400 } },
+    { "id": "6", "data": { "label": "APIs (REST/GraphQL/gRPC)" }, "position": { "x": 250, "y": 500 } },
+    { "id": "7", "data": { "label": "Caching & Message Brokers" }, "position": { "x": 250, "y": 600 } },
+    { "id": "8", "data": { "label": "Security (Auth/OAuth)" }, "position": { "x": 100, "y": 700 } },
+    { "id": "9", "data": { "label": "CI/CD & Docker" }, "position": { "x": 400, "y": 700 } },
+    { "id": "10", "type": "output", "data": { "label": "Cloud Services (AWS/GCP/Azure)" }, "position": { "x": 250, "y": 800 } }
+  ],
+  "edges": [
+    { "id": "e1-2", "source": "1", "target": "2" },
+    { "id": "e2-3", "source": "2", "target": "3" },
+    { "id": "e3-4", "source": "3", "target": "4" },
+    { "id": "e4-5", "source": "4", "target": "5" },
+    { "id": "e5-6", "source": "5", "target": "6" },
+    { "id": "e6-7", "source": "6", "target": "7" },
+    { "id": "e7-8", "source": "7", "target": "8" },
+    { "id": "e7-9", "source": "7", "target": "9" },
+    { "id": "e8-10", "source": "8", "target": "10" },
+    { "id": "e9-10", "source": "9", "target": "10" }
+  ],
+  "skills": ["Python", "Node.js", "Go", "PostgreSQL", "MongoDB", "Redis", "REST", "GraphQL", "gRPC", "Caching", "Auth", "CI/CD", "Docker", "AWS"]
+}

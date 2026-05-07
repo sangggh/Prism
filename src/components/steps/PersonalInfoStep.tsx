@@ -51,11 +51,11 @@ export const PersonalInfoStep: React.FC<Props> = ({ data, onChange }) => {
             value={data.email}
             onChange={handleChange}
             placeholder="e.g. alex@example.com"
-            className={`${inputClasses} ${data.email.length > 0 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email) ? 'border-red-300 ring-red-50' : ''}`}
+            className={`${inputClasses} ${data.email.length > 0 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email) ? 'border-red-300 dark:border-red-500 ring-red-50 dark:ring-red-900/20' : ''}`}
             required
           />
           {data.email.length > 0 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email) && (
-            <span className="text-[10px] text-red-500 font-bold mt-1 ml-1">Please enter a valid email address</span>
+            <span className="text-[10px] text-red-500 dark:text-red-400 font-bold mt-1 ml-1">Please enter a valid email address</span>
           )}
         </div>
         <div className="flex flex-col">
@@ -66,11 +66,11 @@ export const PersonalInfoStep: React.FC<Props> = ({ data, onChange }) => {
             value={data.phone}
             onChange={handleChange}
             placeholder="e.g. 09123456789"
-            className={`${inputClasses} ${data.phone.length > 0 && data.phone.length !== 11 ? 'border-red-300 ring-red-50' : ''}`}
+            className={`${inputClasses} ${data.phone.length > 0 && data.phone.length !== 11 ? 'border-red-300 dark:border-red-500 ring-red-50 dark:ring-red-900/20' : ''}`}
             required
           />
           {data.phone.length > 0 && data.phone.length !== 11 && (
-            <span className="text-[10px] text-red-500 font-bold mt-1 ml-1">Must be exactly 11 digits</span>
+            <span className="text-[10px] text-red-500 dark:text-red-400 font-bold mt-1 ml-1">Must be exactly 11 digits</span>
           )}
         </div>
         <div className="flex flex-col">
@@ -110,3 +110,4 @@ export const PersonalInfoStep: React.FC<Props> = ({ data, onChange }) => {
     </div>
   );
 };
+

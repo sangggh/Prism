@@ -134,7 +134,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto w-full px-6 py-10 flex-1">
+      <main className={`w-full px-4 lg:px-8 py-6 flex-1 transition-all duration-500 ${view === 'history' ? 'max-w-7xl mx-auto' : 'max-w-[1900px] mx-auto'}`}>
         <AnimatePresence mode="wait">
           {view === "history" ? (
             <motion.div
@@ -169,22 +169,22 @@ export default function Home() {
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
-              className="bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl shadow-slate-200 dark:shadow-black/20 border border-slate-100 dark:border-slate-800 overflow-hidden flex flex-col h-[calc(100vh-8rem)]"
+              className="bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl shadow-slate-200/50 dark:shadow-black/40 border border-slate-100 dark:border-slate-800 overflow-hidden flex flex-col h-[calc(100vh-8rem)]"
             >
               {/* Editor Header */}
-              <div className="h-20 px-8 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/50 flex-shrink-0">
+              <div className="h-20 px-8 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-white dark:bg-slate-900 sticky top-0 z-20 flex-shrink-0">
                 <div className="flex items-center gap-4">
                   <button
                     onClick={() => setView("history")}
-                    className="p-2.5 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 border border-transparent hover:border-slate-200 dark:hover:border-slate-600"
+                    className="p-2.5 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-all text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
                   >
                     <ChevronLeft size={22} />
                   </button>
                   <div>
-                    <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+                    <h2 className="text-lg font-bold text-slate-900 dark:text-white leading-tight">
                       {currentResume.personalInfo.fullName || "Untitled Resume"}
                     </h2>
-                    <div className="flex items-center gap-2 text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
+                    <div className="flex items-center gap-2 text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-[0.2em]">
                       <span className="w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-blue-400 animate-pulse" />
                       Live Editor
                     </div>
@@ -202,7 +202,7 @@ export default function Home() {
                   <button
                     onClick={handleExportPDF}
                     disabled={isExporting}
-                    className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-slate-900 dark:bg-blue-600 text-white font-bold text-sm hover:bg-slate-800 dark:hover:bg-blue-700 transition-all shadow-lg shadow-slate-200 dark:shadow-blue-900/20 disabled:opacity-50"
+                    className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-blue-600 text-white font-bold text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 dark:shadow-blue-900/40 disabled:opacity-50"
                   >
                     {isExporting ? (
                       <>
@@ -221,34 +221,35 @@ export default function Home() {
 
               <div className="flex-1 flex overflow-hidden">
                 {/* Left Side: Form */}
-                <div className="flex-1 overflow-y-auto p-10 custom-scrollbar dark:bg-slate-900">
-                  <div className="max-w-3xl mx-auto">
+                <div className="flex-1 overflow-y-auto p-8 lg:p-12 custom-scrollbar bg-white dark:bg-slate-900">
+                  <div className="max-w-2xl mx-auto">
                     <FormWizard
                       data={currentResume}
                       onChange={setCurrentResume}
                       onSave={handleSave}
+                      onPreview={() => {}}
                     />
                   </div>
                 </div>
 
                 {/* Right Side: Preview */}
-                <div className="hidden xl:block w-[550px] bg-slate-50 dark:bg-slate-800/50 border-l border-slate-100 dark:border-slate-800 overflow-y-auto p-10 custom-scrollbar">
-                  <div className="sticky top-0">
-                    <div className="flex items-center justify-between mb-8">
-                      <h3 className="text-sm font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                <div className="hidden xl:block w-[850px] bg-slate-50 dark:bg-slate-950 border-l border-slate-100 dark:border-slate-800 overflow-y-auto p-12 custom-scrollbar">
+                  <div className="sticky top-0 flex flex-col items-center">
+                    <div className="w-full flex items-center justify-between mb-10">
+                      <h3 className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] flex items-center gap-2">
                         <Eye size={14} /> Live Preview
                       </h3>
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-bold bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 px-2.5 py-1 rounded-md">
+                        <span className="text-[10px] font-bold bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-2.5 py-1 rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">
                           A4 Standard
                         </span>
-                        <span className="text-[10px] font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 px-2.5 py-1 rounded-md uppercase tracking-wider">
+                        <span className="text-[10px] font-bold bg-blue-600 text-white px-2.5 py-1 rounded-md uppercase tracking-wider shadow-md shadow-blue-200 dark:shadow-blue-900/20">
                           Ready to Print
                         </span>
                       </div>
                     </div>
-                    <div className="origin-top scale-[0.6] lg:scale-[0.7] xl:scale-[0.8] transition-transform duration-500">
-                      <div className="shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)] rounded-sm overflow-hidden bg-white">
+                    <div className="origin-top scale-[0.8] 2xl:scale-[0.85] transition-all duration-500 pb-20">
+                      <div className="shadow-2xl shadow-slate-300 dark:shadow-black/60 rounded-sm overflow-hidden bg-white ring-1 ring-slate-200 dark:ring-slate-800">
                         <ResumePreview ref={resumeRef} data={currentResume} />
                       </div>
                     </div>

@@ -85,10 +85,10 @@ export const HistoryList: React.FC<Props> = ({
                 </div>
               </div>
 
-              <div className="p-6 bg-slate-50/50 dark:bg-slate-800/50 border-t border-slate-50 dark:border-slate-800">
+              <div className="p-6 bg-white dark:bg-slate-900 border-t border-slate-50 dark:border-slate-800">
                 <button
                   onClick={() => onLoad(resume.id)}
-                  className="w-full flex items-center justify-center gap-2 py-4 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-2xl font-bold hover:bg-blue-600 dark:hover:bg-blue-600 hover:text-white transition-all shadow-sm border border-slate-200 dark:border-slate-800 hover:border-blue-600"
+                  className="w-full flex items-center justify-center gap-2 py-4 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white rounded-2xl font-bold hover:bg-blue-600 dark:hover:bg-blue-600 hover:text-white transition-all shadow-sm border border-slate-200 dark:border-slate-700 hover:border-blue-600"
                 >
                   <Edit size={18} /> Edit Resume
                 </button>
