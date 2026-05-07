@@ -93,7 +93,7 @@ export const JobCard: React.FC<JobCardProps> = ({ job, isSelected, onSelect, use
             onClick={(e) => e.stopPropagation()}
             className="text-[11px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest flex items-center gap-1 hover:underline"
           >
-            Apply on LinkedIn <ExternalLink size={12} />
+            Search on LinkedIn <ExternalLink size={12} />
           </a>
         ) : (
           <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1 cursor-not-allowed opacity-50">

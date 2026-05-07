@@ -52,7 +52,7 @@ export const JobsList: React.FC<JobsListProps> = ({
         </h2>
         <div className="flex items-center gap-1">
           <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-          <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-tight">Direct Apply Available</span>
+          <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-tight">Recent LinkedIn Search</span>
         </div>
       </div>
       

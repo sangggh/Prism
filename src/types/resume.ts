@@ -32,6 +32,8 @@ export interface Certificate {
   date: string;
   link?: string;
   description?: string;
+  category?: string;
+  skills?: string[];
 }
 
 export interface GitHubRepo {
