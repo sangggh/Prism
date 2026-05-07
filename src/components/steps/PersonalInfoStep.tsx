@@ -20,14 +20,14 @@ export const PersonalInfoStep: React.FC<Props> = ({ data, onChange }) => {
     onChange({ ...data, [name]: value });
   };
 
-  const inputClasses = "w-full p-3 bg-white border border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all text-slate-900 placeholder:text-slate-400 font-medium";
-  const labelClasses = "text-xs font-bold uppercase tracking-widest text-slate-500 mb-1.5 ml-1";
+  const inputClasses = "w-full p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:border-blue-500 outline-none transition-all text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 font-medium";
+  const labelClasses = "text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5 ml-1";
 
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-2xl font-black text-slate-900 mb-2">Personal Information</h2>
-        <p className="text-slate-500">This information will appear at the very top of your resume.</p>
+        <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">Personal Information</h2>
+        <p className="text-slate-500 dark:text-slate-400">This information will appear at the very top of your resume.</p>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

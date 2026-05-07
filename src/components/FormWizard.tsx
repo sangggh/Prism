@@ -134,7 +134,7 @@ export const FormWizard: React.FC<Props> = ({ data, onChange, onSave, onPreview 
     <div className="flex flex-col gap-8">
       {/* Horizontal Stepper */}
       <div className="flex items-center justify-between relative px-2">
-        <div className="absolute top-1/2 left-0 w-full h-0.5 bg-slate-100 -translate-y-1/2 z-0" />
+        <div className="absolute top-1/2 left-0 w-full h-0.5 bg-slate-100 dark:bg-slate-800 -translate-y-1/2 z-0" />
         {STEPS.map((step, index) => {
           const Icon = step.icon;
           const isActive = index === currentStep;
@@ -154,17 +154,17 @@ export const FormWizard: React.FC<Props> = ({ data, onChange, onSave, onPreview 
               <div
                 className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 ${
                   isActive
-                    ? "bg-blue-600 text-white shadow-lg shadow-blue-200 scale-110"
+                    ? "bg-blue-600 text-white shadow-lg shadow-blue-200 dark:shadow-blue-900/40 scale-110"
                     : isCompleted
                     ? "bg-green-500 text-white"
-                    : "bg-white text-slate-400 border border-slate-200 group-hover:border-blue-300"
+                    : "bg-white dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700 group-hover:border-blue-300 dark:group-hover:border-blue-700"
                 }`}
               >
                 {isCompleted ? <CheckCircle2 size={20} /> : <Icon size={20} />}
               </div>
               <span
                 className={`absolute -bottom-7 text-[10px] font-bold uppercase tracking-wider whitespace-nowrap transition-colors duration-300 ${
-                  isActive ? "text-blue-600" : "text-slate-400"
+                  isActive ? "text-blue-600 dark:text-blue-400" : "text-slate-400 dark:text-slate-500"
                 }`}
               >
                 {step.label}
@@ -175,7 +175,7 @@ export const FormWizard: React.FC<Props> = ({ data, onChange, onSave, onPreview 
       </div>
 
       {/* Content Area */}
-      <div className="mt-8 bg-slate-50/50 rounded-2xl p-8 border border-slate-100 min-h-[500px]">
+      <div className="mt-8 bg-slate-50/50 dark:bg-slate-800/30 rounded-2xl p-8 border border-slate-100 dark:border-slate-800 min-h-[500px]">
         <AnimatePresence mode="wait">
           {renderStep()}
         </AnimatePresence>
@@ -186,7 +186,7 @@ export const FormWizard: React.FC<Props> = ({ data, onChange, onSave, onPreview 
         <button
           onClick={prevStep}
           disabled={currentStep === 0}
-          className="flex items-center gap-2 px-6 py-3 text-slate-600 font-bold hover:bg-slate-100 rounded-xl disabled:opacity-30 transition-all"
+          className="flex items-center gap-2 px-6 py-3 text-slate-600 dark:text-slate-400 font-bold hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl disabled:opacity-30 transition-all"
         >
           <ArrowLeft size={20} /> Previous
         </button>
@@ -195,17 +195,16 @@ export const FormWizard: React.FC<Props> = ({ data, onChange, onSave, onPreview 
           <button
             onClick={nextStep}
             disabled={!canGoNext}
-            className="flex items-center gap-2 bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 dark:shadow-blue-900/20 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Next Step <ArrowRight size={20} />
           </button>
         ) : (
           <button
-            onClick={onPreview}
-            disabled={!canGoNext}
-            className="flex items-center gap-2 bg-green-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-green-700 transition-all shadow-lg shadow-green-100 disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={onSave}
+            className="flex items-center gap-2 bg-green-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-green-700 transition-all shadow-lg shadow-green-100 dark:shadow-green-900/20"
           >
-            Final Review <ArrowRight size={20} />
+            Finish & Save <CheckCircle2 size={20} />
           </button>
         )}
       </div>

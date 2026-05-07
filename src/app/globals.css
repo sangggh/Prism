@@ -12,6 +12,18 @@
   --ring: #3b82f6;
 }
 
+.dark {
+  --background: #0f172a;
+  --foreground: #f8fafc;
+  --card: #1e293b;
+  --card-foreground: #f8fafc;
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+  --border: #334155;
+  --input: #1e293b;
+  --ring: #60a5fa;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -29,8 +41,6 @@ body {
   font-feature-settings: "rlig" 1, "calt" 1;
 }
 
-
-
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
@@ -46,8 +56,16 @@ body {
   border-radius: 10px;
 }
 
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
 }
 
 .glass {
@@ -56,8 +74,12 @@ body {
   -webkit-backdrop-filter: blur(10px);
 }
 
+.dark .glass {
+  background: rgba(15, 23, 42, 0.7);
+}
+
 @layer base {
   input, textarea, select {
-    @apply bg-slate-50 border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all outline-none;
+    @apply bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900 transition-all outline-none text-slate-900 dark:text-slate-100;
   }
 }

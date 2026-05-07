@@ -10,6 +10,7 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 type ViewState = "history" | "editor" | "review";
 
@@ -83,7 +84,7 @@ export default function Home() {
 
   if (!isLoaded) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
         <div className="flex flex-col items-center gap-4">
           <motion.div
             animate={{ rotate: 360 }}
@@ -91,62 +92,49 @@ export default function Home() {
           >
             <Loader2 className="w-10 h-10 text-blue-600" />
           </motion.div>
-          <p className="text-slate-500 font-medium text-lg animate-pulse">Initializing Prism...</p>
+          <p className="text-slate-500 dark:text-slate-400 font-medium text-lg animate-pulse">Initializing Prism...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen flex flex-col bg-slate-50">
-      {/* App Header */}
-      <header className="h-16 border-b bg-white/80 backdrop-blur-md sticky top-0 z-50 px-6 flex items-center justify-between">
-        <div 
-          className="flex items-center gap-3 cursor-pointer group"
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950">
+      {/* Navigation Header */}
+      <header className="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-50 px-6 flex items-center justify-between">
+        <button 
           onClick={() => setView("history")}
+          className="flex items-center gap-3 group"
         >
-          <div className="bg-blue-600 p-2 rounded-xl group-hover:scale-105 transition-transform shadow-blue-200 shadow-lg">
+          <div className="bg-blue-600 p-2 rounded-xl group-hover:scale-105 transition-transform shadow-blue-200 dark:shadow-blue-900/20 shadow-lg">
             <div className="w-5 h-5 bg-white rounded-md rotate-45" />
           </div>
-          <span className="text-xl font-black tracking-tighter text-slate-900">PRISM</span>
-        </div>
+          <span className="text-xl font-black tracking-tighter text-slate-900 dark:text-white">PRISM</span>
+        </button>
 
-        <div className="flex items-center gap-4">
-          <div className="bg-blue-50 text-blue-600 px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setView("history")}
+            className={`flex items-center gap-2 text-sm font-bold px-4 py-2 rounded-xl transition-all ${
+              view === "history" 
+                ? "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400" 
+                : "text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400"
+            }`}
+          >
             <HomeIcon size={18} /> Home
-          </div>
+          </button>
           <Link
             href="/roadmap"
-            className="flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-blue-600 px-4 py-2 rounded-xl transition-all"
+            className="flex items-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 px-4 py-2 rounded-xl transition-all"
           >
             <Map size={18} /> Roadmap
           </Link>
-          <div className="w-px h-6 bg-slate-200 mx-1" />
-          {(view === "editor" || view === "review") && (
-            <>
-              <button
-                onClick={handleSave}
-                className="flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-blue-600 px-3 py-2 rounded-lg hover:bg-blue-50 transition-all"
-              >
-                <Save size={18} /> Save
-              </button>
-              <div className="w-px h-6 bg-slate-200 mx-2" />
-              {view === "review" && (
-                <button
-                  onClick={handleExportPDF}
-                  disabled={isExporting}
-                  className="flex items-center gap-2 bg-slate-900 text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-slate-800 transition-all shadow-lg shadow-slate-200 disabled:opacity-50"
-                >
-                  {isExporting ? <Loader2 className="animate-spin" size={18} /> : <Download size={18} />}
-                  Export PDF
-                </button>
-              )}
-            </>
-          )}
+          <div className="w-px h-6 bg-slate-200 dark:bg-slate-800 mx-2" />
+          <ThemeToggle />
         </div>
       </header>
 
-      <div className="flex-1 overflow-hidden">
+      <main className="max-w-7xl mx-auto w-full px-6 py-10 flex-1">
         <AnimatePresence mode="wait">
           {view === "history" ? (
             <motion.div
@@ -154,8 +142,20 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="h-full overflow-y-auto"
             >
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+                <div>
+                  <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-2">My Resumes</h1>
+                  <p className="text-slate-500 dark:text-slate-400 font-medium">Manage and edit your professional profiles</p>
+                </div>
+                <button
+                  onClick={handleCreateNew}
+                  className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-bold shadow-lg shadow-blue-200 dark:shadow-blue-900/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  <FilePlus size={20} />
+                  Create New Resume
+                </button>
+              </div>
               <HistoryList
                 resumes={resumes}
                 onLoad={handleLoadResume}
@@ -163,78 +163,103 @@ export default function Home() {
                 onCreateNew={handleCreateNew}
               />
             </motion.div>
-          ) : view === "editor" ? (
-            <motion.div
-              key="editor"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="h-[calc(100vh-64px)] overflow-y-auto bg-white"
-            >
-              <div className="max-w-3xl mx-auto py-10 px-8">
-                <div className="flex items-center gap-4 mb-8">
-                  <button
-                    onClick={() => setView("history")}
-                    className="p-2 hover:bg-slate-100 rounded-xl transition-colors text-slate-400 hover:text-slate-900"
-                  >
-                    <ChevronLeft size={24} />
-                  </button>
-                  <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Resume Editor</h1>
-                    <p className="text-slate-500 text-sm">Build your professional profile step by step</p>
-                  </div>
-                </div>
-                <FormWizard
-                  data={currentResume}
-                  onChange={setCurrentResume}
-                  onSave={handleSave}
-                  onPreview={() => setView("review")}
-                />
-              </div>
-            </motion.div>
           ) : (
             <motion.div
-              key="review"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="h-[calc(100vh-64px)] overflow-y-auto bg-slate-100"
+              key="editor"
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              className="bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl shadow-slate-200 dark:shadow-black/20 border border-slate-100 dark:border-slate-800 overflow-hidden flex flex-col h-[calc(100vh-8rem)]"
             >
-              <div className="max-w-5xl mx-auto py-12 px-8">
-                <div className="flex items-center justify-between mb-8">
-                  <div className="flex items-center gap-4">
-                    <button
-                      onClick={() => setView("editor")}
-                      className="p-2 hover:bg-white rounded-xl transition-colors text-slate-400 hover:text-slate-900 shadow-sm"
-                    >
-                      <ChevronLeft size={24} />
-                    </button>
-                    <div>
-                      <h1 className="text-2xl font-bold text-slate-900">Final Review</h1>
-                      <p className="text-slate-500 text-sm">Preview your resume before downloading</p>
+              {/* Editor Header */}
+              <div className="h-20 px-8 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/50 flex-shrink-0">
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={() => setView("history")}
+                    className="p-2.5 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-all text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 border border-transparent hover:border-slate-200 dark:hover:border-slate-600"
+                  >
+                    <ChevronLeft size={22} />
+                  </button>
+                  <div>
+                    <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+                      {currentResume.personalInfo.fullName || "Untitled Resume"}
+                    </h2>
+                    <div className="flex items-center gap-2 text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-blue-400 animate-pulse" />
+                      Live Editor
                     </div>
                   </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleSave}
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm"
+                  >
+                    <Save size={18} /> Save Progress
+                  </button>
+                  <div className="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1" />
                   <button
                     onClick={handleExportPDF}
                     disabled={isExporting}
-                    className="flex items-center gap-2 bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 disabled:opacity-50"
+                    className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-slate-900 dark:bg-blue-600 text-white font-bold text-sm hover:bg-slate-800 dark:hover:bg-blue-700 transition-all shadow-lg shadow-slate-200 dark:shadow-blue-900/20 disabled:opacity-50"
                   >
-                    {isExporting ? <Loader2 className="animate-spin" size={20} /> : <Download size={20} />}
-                    Download PDF
+                    {isExporting ? (
+                      <>
+                        <Loader2 size={18} className="animate-spin" />
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <Download size={18} />
+                        Download PDF
+                      </>
+                    )}
                   </button>
                 </div>
-                
-                <div className="flex justify-center pb-20">
-                  <div className="shadow-2xl rounded-sm overflow-hidden bg-white">
-                    <ResumePreview ref={resumeRef} data={currentResume} />
+              </div>
+
+              <div className="flex-1 flex overflow-hidden">
+                {/* Left Side: Form */}
+                <div className="flex-1 overflow-y-auto p-10 custom-scrollbar dark:bg-slate-900">
+                  <div className="max-w-3xl mx-auto">
+                    <FormWizard
+                      data={currentResume}
+                      onChange={setCurrentResume}
+                      onSave={handleSave}
+                    />
+                  </div>
+                </div>
+
+                {/* Right Side: Preview */}
+                <div className="hidden xl:block w-[550px] bg-slate-50 dark:bg-slate-800/50 border-l border-slate-100 dark:border-slate-800 overflow-y-auto p-10 custom-scrollbar">
+                  <div className="sticky top-0">
+                    <div className="flex items-center justify-between mb-8">
+                      <h3 className="text-sm font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                        <Eye size={14} /> Live Preview
+                      </h3>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-bold bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 px-2.5 py-1 rounded-md">
+                          A4 Standard
+                        </span>
+                        <span className="text-[10px] font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 px-2.5 py-1 rounded-md uppercase tracking-wider">
+                          Ready to Print
+                        </span>
+                      </div>
+                    </div>
+                    <div className="origin-top scale-[0.6] lg:scale-[0.7] xl:scale-[0.8] transition-transform duration-500">
+                      <div className="shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)] rounded-sm overflow-hidden bg-white">
+                        <ResumePreview ref={resumeRef} data={currentResume} />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }
 
