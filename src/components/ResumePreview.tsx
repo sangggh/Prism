@@ -125,7 +125,7 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
                   <span className="text-[10pt]" style={{ color: '#000000' }}>{formatDate(cert.date)}</span>
                 </div>
                 <div className="text-[9.5pt]" style={{ color: '#1f2937' }}>
-                  {cert.issuer} {cert.url && <span className="text-blue-700 ml-1">• {cert.url.replace(/^https?:\/\//, '')}</span>}
+                  {cert.issuer} {cert.link && <span className="text-blue-700 ml-1">• {cert.link.replace(/^https?:\/\//, '')}</span>}
                 </div>
               </div>
             ))}
