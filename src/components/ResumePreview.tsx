@@ -6,6 +6,26 @@ interface ResumePreviewProps {
   data: ResumeData;
 }
 
+const renderBulletPoints = (description: string) => {
+  if (!description) return null;
+  const lines = description
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0);
+
+  if (lines.length === 0) return null;
+
+  return (
+    <ul className="list-disc ml-5 mt-1 text-[9.5pt] leading-snug" style={{ color: '#1f2937' }}>
+      {lines.map((line, index) => {
+        // Remove existing bullet characters if present at the start (e.g., -, *, •)
+        const cleanedLine = line.replace(/^[•\-\*]\s*/, "");
+        return <li key={index} className="pl-1">{cleanedLine}</li>;
+      })}
+    </ul>
+  );
+};
+
 export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps>(
   ({ data }, ref) => {
     return (
@@ -44,15 +64,13 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
                 <div className="flex justify-between items-baseline mb-1">
                   <span className="font-bold text-[11pt]" style={{ color: '#000000' }}>{edu.school}</span>
                   <span className="text-[10pt]" style={{ color: '#000000' }}>
-                    {formatDate(edu.startDate)} — {edu.endDate ? formatDate(edu.endDate) : "Present"}
+                    {formatDate(edu.startDate)} – {edu.endDate ? formatDate(edu.endDate) : "Present"}
                   </span>
                 </div>
                 <div className="flex justify-between items-baseline">
                   <span className="italic text-[10.5pt]" style={{ color: '#000000' }}>{edu.degree}</span>
                 </div>
-                {edu.description && (
-                  <p className="text-[9.5pt] mt-1 leading-snug" style={{ color: '#1f2937' }}>{edu.description}</p>
-                )}
+                {edu.description && renderBulletPoints(edu.description)}
               </div>
             ))}
           </div>
@@ -69,13 +87,11 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
                 <div className="flex justify-between items-baseline mb-1">
                   <span className="font-bold text-[11pt]" style={{ color: '#000000' }}>{exp.company}</span>
                   <span className="text-[10pt]" style={{ color: '#000000' }}>
-                    {formatDate(exp.startDate)} — {exp.endDate ? formatDate(exp.endDate) : "Present"}
+                    {formatDate(exp.startDate)} – {exp.endDate ? formatDate(exp.endDate) : "Present"}
                   </span>
                 </div>
                 <div className="italic text-[10.5pt] mb-2" style={{ color: '#000000' }}>{exp.position}</div>
-                <div className="text-[9.5pt] whitespace-pre-line leading-snug" style={{ color: '#1f2937' }}>
-                  {exp.description}
-                </div>
+                {exp.description && renderBulletPoints(exp.description)}
               </div>
             ))}
           </div>

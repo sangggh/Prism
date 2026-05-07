@@ -50,6 +50,9 @@ export default function Home() {
     setIsExporting(true);
 
     try {
+      // Small delay to ensure all images/fonts are fully loaded
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
       const element = resumeRef.current;
       
       // High-quality canvas options
@@ -205,27 +208,9 @@ export default function Home() {
                 <div className="flex items-center gap-3">
                   <button
                     onClick={handleSave}
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm"
+                    className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-blue-600 text-white font-bold text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 dark:shadow-blue-900/40"
                   >
-                    <Save size={18} /> Save Progress
-                  </button>
-                  <div className="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1" />
-                  <button
-                    onClick={handleExportPDF}
-                    disabled={isExporting}
-                    className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-blue-600 text-white font-bold text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 dark:shadow-blue-900/40 disabled:opacity-50"
-                  >
-                    {isExporting ? (
-                      <>
-                        <Loader2 size={18} className="animate-spin" />
-                        Generating...
-                      </>
-                    ) : (
-                      <>
-                        <Download size={18} />
-                        Download PDF
-                      </>
-                    )}
+                    <Save size={18} /> Finish & Save
                   </button>
                 </div>
               </div>
