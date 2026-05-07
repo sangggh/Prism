@@ -113,9 +113,9 @@ export const CertificatesStep: React.FC<Props> = ({ data, onChange }) => {
                     </div>
                     <input
                       type="url"
-                      value={cert.url || ""}
-                      onChange={(e) => handleChange(cert.id, "url", e.target.value)}
-                      placeholder="https://..."
+                      value={cert.link || ""}
+                      onChange={(e) => handleChange(cert.id, "link", e.target.value)}
+                      placeholder="e.g. https://..."
                       className={`${inputClasses} pl-11`}
                     />
                   </div>

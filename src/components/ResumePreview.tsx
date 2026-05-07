@@ -22,13 +22,13 @@ export const ResumePreview = React.forwardRef<HTMLDivElement, ResumePreviewProps
           </h1>
           <div className="text-[10pt] flex flex-wrap justify-center gap-x-2" style={{ color: '#374151' }}>
             {data.personalInfo.location && <span>{data.personalInfo.location}</span>}
-            {data.personalInfo.phone && <span>| {data.personalInfo.phone}</span>}
-            {data.personalInfo.email && <span>| {data.personalInfo.email}</span>}
+            {data.personalInfo.phone && <span>{data.personalInfo.location ? "| " : ""}{data.personalInfo.phone}</span>}
+            {data.personalInfo.email && <span>{(data.personalInfo.location || data.personalInfo.phone) ? "| " : ""}{data.personalInfo.email}</span>}
             {data.personalInfo.linkedin && (
-              <span>| LinkedIn: {data.personalInfo.linkedin}</span>
+              <span>{(data.personalInfo.location || data.personalInfo.phone || data.personalInfo.email) ? "| " : ""}{data.personalInfo.linkedin.replace(/^https?:\/\//, '')}</span>
             )}
             {data.personalInfo.github && (
-              <span>| GitHub: {data.personalInfo.github}</span>
+              <span>{(data.personalInfo.location || data.personalInfo.phone || data.personalInfo.email || data.personalInfo.linkedin) ? "| " : ""}{data.personalInfo.github.replace(/^https?:\/\//, '')}</span>
             )}
           </div>
         </div>
